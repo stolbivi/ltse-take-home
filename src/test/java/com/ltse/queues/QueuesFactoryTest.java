@@ -1,6 +1,6 @@
 package com.ltse.queues;
 
-import com.ltse.model.OrderComparatorFactory;
+import com.ltse.model.ComparatorFactory;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class QueuesFactoryTest {
 
-    private static final QueuesFactory factory = new QueuesFactory(new OrderComparatorFactory()){
+    private static final QueuesFactory factory = new QueuesFactory(new ComparatorFactory()){
         @Override
         protected List<String> readFile(String fileName) throws IOException {
             List<String> mockList = new ArrayList();

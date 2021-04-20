@@ -7,15 +7,6 @@ public class OrderParser {
     private static final String BUY = "buy";
     private static final String SELL = "sell";
 
-    /**
-     * FB,buy,market,,1608917400.1954823
-     * GOOG,sell,market,,1608917400.4212484
-     * AAPL,buy,limit,130.98,1608917400.7614357
-     * AMZN,buy,market,,1608917400.9252071
-     *
-     * @param line
-     * @return
-     */
     public AbstractOrder parse(String line) {
         String[] tokens = line.split(",");
         if (tokens.length < 5) {
@@ -43,12 +34,12 @@ public class OrderParser {
         }
         try {
             if (MARKET.equals(tokens[2])) {
-                return new MarketOrder(type, tokens[0], Integer.parseInt(timestamp[0]), Integer.parseInt(timestamp[1]));
+                return new MarketOrder(type, tokens[0], Long.parseLong(timestamp[0]), Integer.parseInt(timestamp[1]));
             } else if (LIMIT.equals(tokens[2])) {
                 if (tokens[3].isBlank()) {
                     return null;
                 }
-                return new LimitOrder(type, tokens[0], Integer.parseInt(timestamp[0]), Integer.parseInt(timestamp[1]), Double.parseDouble(tokens[3]));
+                return new LimitOrder(type, tokens[0], Long.parseLong(timestamp[0]), Integer.parseInt(timestamp[1]), Double.parseDouble(tokens[3]));
             }
         } catch (NumberFormatException e) {
             e.printStackTrace();

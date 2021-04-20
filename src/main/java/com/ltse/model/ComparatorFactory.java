@@ -2,12 +2,12 @@ package com.ltse.model;
 
 import java.util.Comparator;
 
-public class OrderComparatorFactory {
+public class ComparatorFactory {
 
     /**
      * Provides desc order by price and asc order by timestamp for buy orders
      */
-    private class BidPriceLimitComparator extends AbstractOrderComparator<LimitOrder> {
+    private class BidPriceLimitComparator extends TimestampedComparator<LimitOrder> {
         @Override
         public int compare(LimitOrder o1, LimitOrder o2) {
             if (o1.getPrice() == o2.getPrice()) {
@@ -25,7 +25,7 @@ public class OrderComparatorFactory {
     /**
      * Provides ask order by price and asc order by timestamp for sell orders
      */
-    private class AskPriceLimitComparator extends AbstractOrderComparator<LimitOrder> {
+    private class AskPriceLimitComparator extends TimestampedComparator<LimitOrder> {
         @Override
         public int compare(LimitOrder o1, LimitOrder o2) {
             if (o1.getPrice() == o2.getPrice()) {
@@ -39,17 +39,6 @@ public class OrderComparatorFactory {
             }
         }
     }
-
-    /**
-     * Provides asc order by timestamp for any market order
-     */
-    private class TimeOnlyComparator extends AbstractOrderComparator<AbstractOrder> {
-        @Override
-        public int compare(AbstractOrder o1, AbstractOrder o2) {
-            return super.compare(o1, o2);
-        }
-    }
-
 
     /**
      * Creates comparator for specific queue based on order type.
@@ -72,8 +61,8 @@ public class OrderComparatorFactory {
      *
      * @return
      */
-    public Comparator<AbstractOrder> createTimeOnlyComparator() {
-        return new TimeOnlyComparator();
+    public Comparator<Timestamped> createTimestampedComparator() {
+        return new TimestampedComparator();
     }
 
 }

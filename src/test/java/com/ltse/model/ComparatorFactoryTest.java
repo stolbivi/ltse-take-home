@@ -8,16 +8,16 @@ import static com.ltse.model.OrderType.BUY;
 import static com.ltse.model.OrderType.SELL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class OrderComparatorFactoryTest {
+public class ComparatorFactoryTest {
 
-    private static final OrderComparatorFactory factory = new OrderComparatorFactory();
+    private static final ComparatorFactory factory = new ComparatorFactory();
 
-    private LimitOrder limitOrder(OrderType type, String symbol, int time, int nanoseconds, double price) {
-        return new LimitOrder(type, symbol, time, nanoseconds, price);
+    private LimitOrder limitOrder(OrderType type, String symbol, long time, int nano, double price) {
+        return new LimitOrder(type, symbol, time, nano, price);
     }
 
-    private MarketOrder marketOrder(OrderType type, String symbol, int time, int nanoseconds) {
-        return new MarketOrder(type, symbol, time, nanoseconds);
+    private MarketOrder marketOrder(OrderType type, String symbol, long time, int nano) {
+        return new MarketOrder(type, symbol, time, nano);
     }
 
     @Test
@@ -88,7 +88,7 @@ public class OrderComparatorFactoryTest {
 
     @Test
     public void testMarketOrderComparator() {
-        Comparator<AbstractOrder> comparator = factory.createTimeOnlyComparator();
+        Comparator<Timestamped> comparator = factory.createTimestampedComparator();
         assertEquals(0, comparator.compare(
                 marketOrder(BUY, "FB", 1, 1000),
                 marketOrder(BUY, "FB", 1, 1000)

@@ -39,7 +39,7 @@ public class OrderRouter {
      */
     public void start() {
         routeExecutor.execute(() -> {
-            while (!routeExecutor.isTerminated()) {
+            while (!routeExecutor.isShutdown()) {
                 try {
                     AbstractOrder order = orderQueue.poll();
                     if (order == null) {
@@ -76,6 +76,11 @@ public class OrderRouter {
                 }
             }
         });
+    }
+
+    public void stop() {
+        readExecutor.shutdown();
+        routeExecutor.shutdown();
     }
 
     /**

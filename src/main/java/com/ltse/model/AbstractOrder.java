@@ -1,12 +1,10 @@
 package com.ltse.model;
 
 
-public abstract class AbstractOrder {
+public abstract class AbstractOrder extends Timestamped{
 
     private OrderType type;
     private String symbol;
-    private int time;
-    private int nanoseconds;
     private String cancellationReason;
 
     /**
@@ -17,23 +15,14 @@ public abstract class AbstractOrder {
      * @param time
      * @param nanoseconds
      */
-    public AbstractOrder(OrderType type, String symbol, int time, int nanoseconds) {
+    public AbstractOrder(OrderType type, String symbol, long time, int nanoseconds) {
+        super(time, nanoseconds);
         this.type = type;
         this.symbol = symbol;
-        this.time = time;
-        this.nanoseconds = nanoseconds;
     }
 
     public String getSymbol() {
         return symbol;
-    }
-
-    public int getTime() {
-        return time;
-    }
-
-    public int getNanoseconds() {
-        return nanoseconds;
     }
 
     public OrderType getType() {

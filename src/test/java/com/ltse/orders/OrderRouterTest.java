@@ -1,7 +1,7 @@
 package com.ltse.orders;
 
 import com.ltse.model.AbstractOrder;
-import com.ltse.model.OrderComparatorFactory;
+import com.ltse.model.ComparatorFactory;
 import com.ltse.queues.QueuesFactory;
 import com.ltse.queues.SymbolQueues;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,18 +16,18 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class OrderRouterTest {
 
-    private static OrderRouter orderRouter;
-    private static QueuesFactory queuesFactory;
-    private static Map<String, SymbolQueues> queues;
-    private static PriorityBlockingQueue<? extends AbstractOrder> orderQueue;
-    private static PriorityBlockingQueue<? extends AbstractOrder> cancellationQueue;
+    private OrderRouter orderRouter;
+    private QueuesFactory queuesFactory;
+    private Map<String, SymbolQueues> queues;
+    private PriorityBlockingQueue<? extends AbstractOrder> orderQueue;
+    private PriorityBlockingQueue<? extends AbstractOrder> cancellationQueue;
 
     @BeforeEach
     public void init() throws IOException {
-        queuesFactory = new QueuesFactory(new OrderComparatorFactory());
+        queuesFactory = new QueuesFactory(new ComparatorFactory());
         queues = queuesFactory.createSymbolQueues("./src/test/resources/symbols.csv");
-        orderQueue = queuesFactory.createTimeOrderedQueue();
-        cancellationQueue = queuesFactory.createTimeOrderedQueue();
+        orderQueue = queuesFactory.createAbstractOrderQueue();
+        cancellationQueue = queuesFactory.createAbstractOrderQueue();
         orderRouter = new OrderRouter("./src/test/resources/orders.csv", queues, orderQueue, cancellationQueue);
 
     }
@@ -52,11 +52,12 @@ public class OrderRouterTest {
                 continue;
             }
             assertEquals(5, queues.size());
-            assertEquals(1954823, queues.get("FB").getMarketQueue().poll().getNanoseconds());
-            assertEquals(9252071, queues.get("AMZN").getMarketQueue().poll().getNanoseconds());
+            assertEquals(1954823, queues.get("FB").getMarketQueue().poll().getNano());
+            assertEquals(9252071, queues.get("AMZN").getMarketQueue().poll().getNano());
             assertNull(queues.get("GOOG").getMarketQueue().poll());
-            assertEquals(7614357, queues.get("AAPL").getBuyQueue().poll().getNanoseconds());
-            assertEquals(4212484, cancellationQueue.poll().getNanoseconds());
+            assertEquals(7614357, queues.get("AAPL").getBuyQueue().poll().getNano());
+            assertEquals(4212484, cancellationQueue.poll().getNano());
+            orderRouter.stop();
         });
     }
 

@@ -4,8 +4,8 @@ public class LimitOrder extends AbstractOrder {
 
     private double price;
 
-    public LimitOrder(OrderType type, String symbol, int time, int nanoseconds, double price) {
-        super(type, symbol, time, nanoseconds);
+    public LimitOrder(OrderType type, String symbol, long time, int nano, double price) {
+        super(type, symbol, time, nano);
         this.price = price;
     }
 

@@ -1,8 +1,9 @@
 package com.ltse.queues;
 
 import com.ltse.model.AbstractOrder;
-import com.ltse.model.OrderComparatorFactory;
+import com.ltse.model.ComparatorFactory;
 import com.ltse.model.OrderType;
+import com.ltse.model.Timestamped;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -17,9 +18,9 @@ import java.util.concurrent.PriorityBlockingQueue;
 public class QueuesFactory {
 
     private static final int DEFAULT_QUEUE_SIZE = 1000;
-    private OrderComparatorFactory comparatorFactory;
+    private ComparatorFactory comparatorFactory;
 
-    public QueuesFactory(OrderComparatorFactory comparatorFactory) {
+    public QueuesFactory(ComparatorFactory comparatorFactory) {
         this.comparatorFactory = comparatorFactory;
     }
 
@@ -43,7 +44,7 @@ public class QueuesFactory {
             SymbolQueues queues = new SymbolQueues(
                     tokens[0],
                     Boolean.valueOf(tokens[1]),
-                    createQueue(comparatorFactory.createTimeOnlyComparator()),
+                    createQueue(comparatorFactory.createTimestampedComparator()),
                     createQueue(comparatorFactory.createLimitOrderComparator(OrderType.BUY)),
                     createQueue(comparatorFactory.createLimitOrderComparator(OrderType.SELL))
             );
@@ -52,16 +53,20 @@ public class QueuesFactory {
         return result;
     }
 
-    public PriorityBlockingQueue<? extends AbstractOrder> createTimeOrderedQueue() {
-        return new PriorityBlockingQueue(DEFAULT_QUEUE_SIZE, comparatorFactory.createTimeOnlyComparator());
+    public PriorityBlockingQueue<AbstractOrder> createAbstractOrderQueue() {
+        return new PriorityBlockingQueue(DEFAULT_QUEUE_SIZE, comparatorFactory.createTimestampedComparator());
+    }
+
+    public <T extends Timestamped> PriorityBlockingQueue<T> createTimestampedQueue() {
+        return new PriorityBlockingQueue(DEFAULT_QUEUE_SIZE, comparatorFactory.createTimestampedComparator());
+    }
+
+    private PriorityBlockingQueue<? extends Timestamped> createQueue(Comparator<? extends Timestamped> comparator) {
+        return new PriorityBlockingQueue(DEFAULT_QUEUE_SIZE, comparator);
     }
 
     protected List<String> readFile(String fileName) throws IOException {
         return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
-    }
-
-    private PriorityBlockingQueue<? extends AbstractOrder> createQueue(Comparator<? extends AbstractOrder> comparator) {
-        return new PriorityBlockingQueue(DEFAULT_QUEUE_SIZE, comparator);
     }
 
 }

@@ -10,9 +10,9 @@ public class SymbolQueues {
 
     private String symbol;
     private Boolean halted;
-    private PriorityBlockingQueue marketQueue;
-    private PriorityBlockingQueue buyQueue;
-    private PriorityBlockingQueue sellQueue;
+    private PriorityBlockingQueue<MarketOrder> marketQueue;
+    private PriorityBlockingQueue<LimitOrder> buyQueue;
+    private PriorityBlockingQueue<LimitOrder> sellQueue;
 
     public SymbolQueues(String symbol, Boolean halted, PriorityBlockingQueue marketQueue, PriorityBlockingQueue buyQueue, PriorityBlockingQueue sellQueue) {
         this.symbol = symbol;

@@ -15,7 +15,7 @@ public class OrderParserTest {
         LimitOrder limitOrder = (LimitOrder) order;
         assertEquals(OrderType.BUY, limitOrder.getType());
         assertEquals(1608917400, limitOrder.getTime());
-        assertEquals(7614357, limitOrder.getNanoseconds());
+        assertEquals(7614357, limitOrder.getNano());
         assertEquals(130.98, limitOrder.getPrice());
     }
 
@@ -35,7 +35,7 @@ public class OrderParserTest {
         MarketOrder marketOrder = (MarketOrder) order;
         assertEquals(OrderType.BUY, marketOrder.getType());
         assertEquals(1608917400, marketOrder.getTime());
-        assertEquals(7614357, marketOrder.getNanoseconds());
+        assertEquals(7614357, marketOrder.getNano());
     }
 
 }
