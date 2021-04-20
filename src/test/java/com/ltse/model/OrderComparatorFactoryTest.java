@@ -88,7 +88,7 @@ public class OrderComparatorFactoryTest {
 
     @Test
     public void testMarketOrderComparator() {
-        Comparator<MarketOrder> comparator = factory.createMarketOrderComparator();
+        Comparator<AbstractOrder> comparator = factory.createTimeOnlyComparator();
         assertEquals(0, comparator.compare(
                 marketOrder(BUY, "FB", 1, 1000),
                 marketOrder(BUY, "FB", 1, 1000)

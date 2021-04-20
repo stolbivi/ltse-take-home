@@ -7,6 +7,7 @@ public abstract class AbstractOrder {
     private String symbol;
     private int time;
     private int nanoseconds;
+    private String cancellationReason;
 
     /**
      * Since the order is extremely important we split epoch time into 2 separate integer parts to avoid
@@ -37,6 +38,14 @@ public abstract class AbstractOrder {
 
     public OrderType getType() {
         return type;
+    }
+
+    public String getCancellationReason() {
+        return cancellationReason;
+    }
+
+    public void setCancellationReason(String cancellationReason) {
+        this.cancellationReason = cancellationReason;
     }
 
 }

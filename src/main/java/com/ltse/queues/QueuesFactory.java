@@ -1,6 +1,6 @@
 package com.ltse.queues;
 
-import com.ltse.model.LimitOrder;
+import com.ltse.model.AbstractOrder;
 import com.ltse.model.OrderComparatorFactory;
 import com.ltse.model.OrderType;
 
@@ -8,7 +8,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.PriorityBlockingQueue;
 
 public class QueuesFactory {
@@ -29,7 +32,7 @@ public class QueuesFactory {
      */
     public Map<String, SymbolQueues> createSymbolQueues(String symbolsFile) throws IOException {
         Map<String, SymbolQueues> result = new HashMap<>();
-        List<String> lines = Files.readAllLines(Paths.get(symbolsFile), StandardCharsets.UTF_8);
+        List<String> lines = readFile(symbolsFile);
         boolean skipHeader = true;
         for (String line : lines) {
             if (skipHeader) {
@@ -40,6 +43,7 @@ public class QueuesFactory {
             SymbolQueues queues = new SymbolQueues(
                     tokens[0],
                     Boolean.valueOf(tokens[1]),
+                    createQueue(comparatorFactory.createTimeOnlyComparator()),
                     createQueue(comparatorFactory.createLimitOrderComparator(OrderType.BUY)),
                     createQueue(comparatorFactory.createLimitOrderComparator(OrderType.SELL))
             );
@@ -48,7 +52,15 @@ public class QueuesFactory {
         return result;
     }
 
-    private PriorityBlockingQueue createQueue(Comparator<LimitOrder> comparator) {
+    public PriorityBlockingQueue<? extends AbstractOrder> createTimeOrderedQueue() {
+        return new PriorityBlockingQueue(DEFAULT_QUEUE_SIZE, comparatorFactory.createTimeOnlyComparator());
+    }
+
+    protected List<String> readFile(String fileName) throws IOException {
+        return Files.readAllLines(Paths.get(fileName), StandardCharsets.UTF_8);
+    }
+
+    private PriorityBlockingQueue<? extends AbstractOrder> createQueue(Comparator<? extends AbstractOrder> comparator) {
         return new PriorityBlockingQueue(DEFAULT_QUEUE_SIZE, comparator);
     }
 

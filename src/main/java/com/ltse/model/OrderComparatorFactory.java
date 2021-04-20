@@ -43,9 +43,9 @@ public class OrderComparatorFactory {
     /**
      * Provides asc order by timestamp for any market order
      */
-    private class MarketComparator extends AbstractOrderComparator<MarketOrder> {
+    private class TimeOnlyComparator extends AbstractOrderComparator<AbstractOrder> {
         @Override
-        public int compare(MarketOrder o1, MarketOrder o2) {
+        public int compare(AbstractOrder o1, AbstractOrder o2) {
             return super.compare(o1, o2);
         }
     }
@@ -72,8 +72,8 @@ public class OrderComparatorFactory {
      *
      * @return
      */
-    public Comparator<MarketOrder> createMarketOrderComparator() {
-        return new MarketComparator();
+    public Comparator<AbstractOrder> createTimeOnlyComparator() {
+        return new TimeOnlyComparator();
     }
 
 }
