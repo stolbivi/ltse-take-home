@@ -13,4 +13,8 @@ public class LimitOrder extends AbstractOrder {
         return price;
     }
 
+    @Override
+    public String toString() {
+        return "LimitOrder{symbol=" + getSymbol() + ",type=" + this.getType() + ",price=" + price + '}';
+    }
 }

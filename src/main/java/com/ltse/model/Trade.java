@@ -1,6 +1,6 @@
 package com.ltse.model;
 
-public class Trade extends Timestamped{
+public class Trade extends Timestamped {
 
     private String symbol;
     private double price;
@@ -17,6 +17,11 @@ public class Trade extends Timestamped{
 
     public double getPrice() {
         return price;
+    }
+
+    @Override
+    public String toString() {
+        return "Trade{symbol=" + getSymbol() + ",price=" + price + '}';
     }
 
 }

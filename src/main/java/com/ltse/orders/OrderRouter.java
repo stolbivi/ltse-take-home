@@ -86,10 +86,9 @@ public class OrderRouter {
     /**
      * This method simulates external connectivity to order stream, in particular implementation it reads file in a separate thread and populates orderQueue
      */
-    protected void subscribeToOrders(Runnable callback) {
+    public void subscribeToOrders(Runnable callback) {
         readExecutor.execute(() -> {
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(this.ordersFileName));
+            try (BufferedReader bufferedReader = new BufferedReader(new FileReader(this.ordersFileName))) {
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
                     AbstractOrder order = parser.parse(line);

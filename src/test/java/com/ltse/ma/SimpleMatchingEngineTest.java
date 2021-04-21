@@ -3,7 +3,7 @@ package com.ltse.ma;
 import com.ltse.model.*;
 import com.ltse.queues.QueuesFactory;
 import com.ltse.queues.SymbolQueues;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -27,14 +27,14 @@ public class SimpleMatchingEngineTest {
             return mockList;
         }
     };
-    private static SymbolQueues queues;
-    private static PriorityBlockingQueue<AbstractOrder> cancellationQueue;
-    private static PriorityBlockingQueue<Trade> tradeQueue;
+    private SymbolQueues queues;
+    private PriorityBlockingQueue<AbstractOrder> cancellationQueue;
+    private PriorityBlockingQueue<Trade> tradeQueue;
 
-    @BeforeAll
-    public static void init() throws IOException {
+    @BeforeEach
+    public void init() throws IOException {
         Map<String, SymbolQueues> map = queuesFactory.createSymbolQueues("dummyFile");
-        queues = map.get("APPL");
+        queues = map.get("AAPL");
         cancellationQueue = queuesFactory.createAbstractOrderQueue();
         tradeQueue = queuesFactory.createTimestampedQueue();
         engine = new SimpleMatchingEngine(queues, cancellationQueue, tradeQueue);
@@ -78,6 +78,33 @@ public class SimpleMatchingEngineTest {
         assertEquals(0, tradeQueue.size());
         assertEquals(1, cancellationQueue.size());
         assertNotNull(cancellationQueue.poll().getCancellationReason());
+    }
+
+    @Test
+    public void testMatchLimitTrade() {
+        LimitOrder buyOrder = new LimitOrder(OrderType.BUY, "AAPL", 1, 1, 101);
+        LimitOrder sellOrder = new LimitOrder(OrderType.SELL, "AAPL", 1, 2, 100.1);
+        queues.getBuyQueue().add(buyOrder);
+        queues.getSellQueue().add(sellOrder);
+        engine.matchLimitOrder(buyOrder, sellOrder);
+        assertEquals(0, queues.getBuyQueue().size());
+        assertEquals(0, queues.getSellQueue().size());
+        assertEquals(1, tradeQueue.size());
+        assertEquals(0, cancellationQueue.size());
+        assertEquals(100.1, tradeQueue.poll().getPrice());
+    }
+
+    @Test
+    public void testMatchLimitNoTrade() {
+        LimitOrder buyOrder = new LimitOrder(OrderType.BUY, "AAPL", 1, 1, 101);
+        LimitOrder sellOrder = new LimitOrder(OrderType.SELL, "AAPL", 1, 2, 101.1);
+        queues.getBuyQueue().add(buyOrder);
+        queues.getSellQueue().add(sellOrder);
+        engine.matchLimitOrder(buyOrder, sellOrder);
+        assertEquals(1, queues.getBuyQueue().size());
+        assertEquals(1, queues.getSellQueue().size());
+        assertEquals(0, tradeQueue.size());
+        assertEquals(0, cancellationQueue.size());
     }
 
 }
