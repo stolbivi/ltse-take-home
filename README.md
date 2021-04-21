@@ -1,3 +1,22 @@
+# Description
+
+The original definition of the exercise remains unchanged below for quick reference.
+
+To test current solution please run:
+```
+mvn clean verify
+```
+
+To execute the main class please run:
+```
+mvn clean compile exec:java
+```
+
+The description of components is provided in a form of comments and java docs right in the code to make it easier to follow.
+
+Thank you very much for your time!
+
+
 # Take-home Exercise: Senior Exchange Software Engineer
 
 This exercise is designed to help us understand how you think and approach your work. While the code should work, we are mostly looking for testing, readability and code organization. Refer to the rubric for additional insights on the weight we’ll be assigning to each category. If you need to make an incomplete submission, we ask that you provide detailed descriptions of what you would have done given ample time.
